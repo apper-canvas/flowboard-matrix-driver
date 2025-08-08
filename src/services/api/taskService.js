@@ -19,11 +19,12 @@ class TaskService {
     return { ...task };
   }
 
-  async create(taskData) {
+async create(taskData) {
     await this.delay();
     const newTask = {
       Id: Math.max(...this.tasks.map(t => t.Id), 0) + 1,
       ...taskData,
+      labelIds: taskData.labelIds || [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
@@ -31,7 +32,7 @@ class TaskService {
     return { ...newTask };
   }
 
-  async update(id, taskData) {
+async update(id, taskData) {
     await this.delay();
     const index = this.tasks.findIndex(t => t.Id === id);
     if (index === -1) {
@@ -42,6 +43,7 @@ class TaskService {
       ...this.tasks[index],
       ...taskData,
       Id: id,
+      labelIds: taskData.labelIds || this.tasks[index].labelIds || [],
       updatedAt: new Date().toISOString()
     };
     

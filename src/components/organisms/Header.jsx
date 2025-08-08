@@ -8,7 +8,8 @@ const Header = ({
   selectedProject, 
   onProjectChange, 
   onAddTask,
-  onAddProject 
+  onAddProject,
+  onManageLabels
 }) => {
   return (
     <header className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-40">
@@ -29,7 +30,16 @@ const Header = ({
             />
           </div>
           
-          <div className="flex items-center space-x-3">
+<div className="flex items-center space-x-3">
+            <Button
+              variant="secondary"
+              onClick={onManageLabels}
+              className="hidden sm:flex"
+            >
+              <ApperIcon name="Tag" size={16} className="mr-2" />
+              Manage Labels
+            </Button>
+            
             <Button
               variant="secondary"
               onClick={onAddProject}

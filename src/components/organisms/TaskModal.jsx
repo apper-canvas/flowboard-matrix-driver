@@ -1,28 +1,31 @@
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import Button from "@/components/atoms/Button";
-import Input from "@/components/atoms/Input";
-import Textarea from "@/components/atoms/Textarea";
-import Select from "@/components/atoms/Select";
+import React, { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { cn } from "@/utils/cn";
 import ApperIcon from "@/components/ApperIcon";
+import Textarea from "@/components/atoms/Textarea";
+import Input from "@/components/atoms/Input";
+import Button from "@/components/atoms/Button";
+import Select from "@/components/atoms/Select";
 
 const TaskModal = ({ 
   task, 
   projects, 
+  labels = [],
   isOpen, 
   onClose, 
   onSave 
 }) => {
-  const [formData, setFormData] = useState({
+const [formData, setFormData] = useState({
     title: "",
     description: "",
     projectId: "",
     priority: "medium",
     dueDate: "",
-    status: "todo"
+    status: "todo",
+    labelIds: []
   });
 
-  useEffect(() => {
+useEffect(() => {
     if (task) {
       setFormData({
         title: task.title || "",
@@ -30,7 +33,8 @@ const TaskModal = ({
         projectId: task.projectId?.toString() || "",
         priority: task.priority || "medium",
         dueDate: task.dueDate ? task.dueDate.split('T')[0] : "",
-        status: task.status || "todo"
+        status: task.status || "todo",
+        labelIds: task.labelIds || []
       });
     } else {
       setFormData({
@@ -39,12 +43,13 @@ const TaskModal = ({
         projectId: projects.length > 0 ? projects[0].Id.toString() : "",
         priority: "medium",
         dueDate: "",
-        status: "todo"
+        status: "todo",
+        labelIds: []
       });
     }
   }, [task, projects, isOpen]);
 
-  const handleSubmit = (e) => {
+const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.title.trim()) return;
 
@@ -52,6 +57,7 @@ const TaskModal = ({
       ...formData,
       projectId: parseInt(formData.projectId),
       dueDate: formData.dueDate ? new Date(formData.dueDate).toISOString() : null,
+      labelIds: formData.labelIds,
       updatedAt: new Date().toISOString()
     };
 
@@ -67,6 +73,14 @@ const TaskModal = ({
     }
     
     onClose();
+  };
+
+  const handleLabelChange = (labelId) => {
+    const currentLabels = formData.labelIds || [];
+    const updatedLabels = currentLabels.includes(labelId)
+      ? currentLabels.filter(id => id !== labelId)
+      : [...currentLabels, labelId];
+    handleChange("labelIds", updatedLabels);
   };
 
   const handleChange = (field, value) => {
@@ -105,7 +119,7 @@ const TaskModal = ({
               </button>
             </div>
             
-            <form onSubmit={handleSubmit} className="space-y-4">
+<form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Task Title
@@ -129,6 +143,38 @@ const TaskModal = ({
                   rows={3}
                 />
               </div>
+
+              {/* Labels Section */}
+              {labels.length > 0 && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Labels
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {labels.map((label) => (
+                      <button
+                        key={label.Id}
+                        type="button"
+                        onClick={() => handleLabelChange(label.Id)}
+                        className={cn(
+                          "inline-flex items-center px-3 py-1 rounded-full text-xs font-medium transition-all duration-200",
+                          (formData.labelIds || []).includes(label.Id)
+                            ? "text-white shadow-md"
+                            : "text-gray-600 bg-gray-100 hover:bg-gray-200"
+                        )}
+                        style={{
+                          backgroundColor: (formData.labelIds || []).includes(label.Id) ? label.color : undefined
+                        }}
+                      >
+                        {label.name}
+                        {(formData.labelIds || []).includes(label.Id) && (
+                          <ApperIcon name="Check" size={12} className="ml-1" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -190,7 +236,7 @@ const TaskModal = ({
                 </div>
               </div>
               
-              <div className="flex justify-end space-x-3 pt-4">
+<div className="flex justify-end space-x-3 pt-4">
                 <Button
                   type="button"
                   variant="secondary"

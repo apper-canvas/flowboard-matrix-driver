@@ -9,6 +9,7 @@ import { cn } from "@/utils/cn";
 const TaskCard = ({ 
   task, 
   project, 
+  labels = [],
   onEdit, 
   onDelete, 
   draggable = false,
@@ -84,7 +85,24 @@ const TaskCard = ({
           {task.description}
         </p>
       )}
-      
+{/* Task Labels */}
+      {task.labelIds && task.labelIds.length > 0 && (
+        <div className="flex flex-wrap gap-1 mb-2">
+          {task.labelIds.map((labelId) => {
+            const label = labels.find(l => l.Id === labelId);
+            return label ? (
+              <span
+                key={labelId}
+                className="inline-block px-2 py-1 text-xs font-medium rounded-full text-white"
+                style={{ backgroundColor: label.color }}
+              >
+                {label.name}
+              </span>
+            ) : null;
+          })}
+        </div>
+      )}
+
       <div className="flex items-center justify-between">
         {task.dueDate && (
           <div className={cn(
