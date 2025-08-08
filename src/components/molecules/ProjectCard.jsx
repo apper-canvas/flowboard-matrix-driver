@@ -4,8 +4,8 @@ import ProgressRing from "@/components/atoms/ProgressRing";
 import ApperIcon from "@/components/ApperIcon";
 
 const ProjectCard = ({ project, onSelect }) => {
-  const completionRate = project.taskCount > 0 
-    ? (project.completedCount / project.taskCount) * 100 
+const completionRate = project.task_count_c > 0 
+    ? (project.completed_count_c / project.task_count_c) * 100 
     : 0;
     
   return (
@@ -16,22 +16,22 @@ const ProjectCard = ({ project, onSelect }) => {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-3">
           <div
-            className="w-4 h-4 rounded-full"
-            style={{ backgroundColor: project.color }}
+className="w-4 h-4 rounded-full"
+            style={{ backgroundColor: project.color_c }}
           />
-          <h3 className="font-semibold text-gray-900">{project.name}</h3>
+          <h3 className="font-semibold text-gray-900">{project.Name}</h3>
         </div>
         <ApperIcon name="ChevronRight" size={16} className="text-gray-400" />
       </div>
       
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-6">
-          <div>
-            <p className="text-2xl font-bold text-gray-900">{project.taskCount}</p>
+<div>
+            <p className="text-2xl font-bold text-gray-900">{project.task_count_c}</p>
             <p className="text-sm text-gray-500">Total Tasks</p>
           </div>
           <div>
-            <p className="text-2xl font-bold text-success">{project.completedCount}</p>
+            <p className="text-2xl font-bold text-success">{project.completed_count_c}</p>
             <p className="text-sm text-gray-500">Completed</p>
           </div>
         </div>

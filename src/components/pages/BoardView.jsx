@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useContext } from "react";
 import { toast } from "react-toastify";
 import Header from "@/components/organisms/Header";
 import KanbanBoard from "@/components/organisms/KanbanBoard";
@@ -9,14 +9,18 @@ import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import { taskService } from "@/services/api/taskService";
 import { projectService } from "@/services/api/projectService";
+import { labelService } from "@/services/api/labelService";
+import { AuthContext } from "../../App";
 import { isToday, isThisWeek, isThisMonth, isPast } from "date-fns";
 
 const BoardView = () => {
   const [tasks, setTasks] = useState([]);
   const [projects, setProjects] = useState([]);
+  const [labels, setLabels] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { logout } = useContext(AuthContext);
   
   // Modal states
   const [taskModalOpen, setTaskModalOpen] = useState(false);
@@ -31,18 +35,20 @@ const BoardView = () => {
     searchQuery: ""
   });
 
-  const loadData = async () => {
+const loadData = async () => {
     try {
       setLoading(true);
       setError(null);
       
-      const [tasksData, projectsData] = await Promise.all([
+      const [tasksData, projectsData, labelsData] = await Promise.all([
         taskService.getAll(),
-        projectService.getAll()
+        projectService.getAll(),
+        labelService.getAll()
       ]);
       
       setTasks(tasksData);
       setProjects(projectsData);
+      setLabels(labelsData);
       
       // Set first project as default if none selected
       if (!selectedProject && projectsData.length > 0) {
@@ -59,25 +65,25 @@ const BoardView = () => {
     loadData();
   }, []);
 
-  // Filter tasks based on current filters
+// Filter tasks based on current filters
   const filteredTasks = useMemo(() => {
     let filtered = [...tasks];
 
     // Filter by selected project
     if (selectedProject) {
-      filtered = filtered.filter(task => task.projectId === selectedProject.Id);
+      filtered = filtered.filter(task => task.project_id_c?.Id === selectedProject.Id);
     }
 
     // Filter by priority
     if (filters.priority) {
-      filtered = filtered.filter(task => task.priority === filters.priority);
+      filtered = filtered.filter(task => task.priority_c === filters.priority);
     }
 
     // Filter by date range
     if (filters.dateRange && filters.dateRange !== "") {
       filtered = filtered.filter(task => {
-        if (!task.dueDate) return false;
-        const dueDate = new Date(task.dueDate);
+        if (!task.due_date_c) return false;
+        const dueDate = new Date(task.due_date_c);
         
         switch (filters.dateRange) {
           case "today":
@@ -87,7 +93,7 @@ const BoardView = () => {
           case "month":
             return isThisMonth(dueDate);
           case "overdue":
-            return isPast(dueDate) && task.status !== "done";
+            return isPast(dueDate) && task.status_c !== "done";
           default:
             return true;
         }
@@ -98,8 +104,8 @@ const BoardView = () => {
     if (filters.searchQuery) {
       const query = filters.searchQuery.toLowerCase();
       filtered = filtered.filter(task =>
-        task.title.toLowerCase().includes(query) ||
-        (task.description && task.description.toLowerCase().includes(query))
+        task.title_c.toLowerCase().includes(query) ||
+        (task.description_c && task.description_c.toLowerCase().includes(query))
       );
     }
 
@@ -180,18 +186,18 @@ const BoardView = () => {
     }
   };
 
-  // Update project task counts
+// Update project task counts
   const updateProjectCounts = async () => {
     try {
       const updatedTasks = await taskService.getAll();
       const updatedProjects = projects.map(project => {
-        const projectTasks = updatedTasks.filter(task => task.projectId === project.Id);
-        const completedTasks = projectTasks.filter(task => task.status === "done");
+        const projectTasks = updatedTasks.filter(task => task.project_id_c?.Id === project.Id);
+        const completedTasks = projectTasks.filter(task => task.status_c === "done");
         
         return {
           ...project,
-          taskCount: projectTasks.length,
-          completedCount: completedTasks.length
+          task_count_c: projectTasks.length,
+          completed_count_c: completedTasks.length
         };
       });
       
@@ -227,7 +233,7 @@ const BoardView = () => {
   if (loading) return <Loading />;
   if (error) return <Error error={error} onRetry={loadData} />;
 
-  return (
+return (
     <div className="min-h-screen bg-background">
       <Header
         projects={projects}
@@ -235,6 +241,7 @@ const BoardView = () => {
         onProjectChange={setSelectedProject}
         onAddTask={() => openTaskModal()}
         onAddProject={() => openProjectModal()}
+        onLogout={logout}
       />
       
       <main className="p-6">
@@ -259,6 +266,7 @@ const BoardView = () => {
       <TaskModal
         task={editingTask}
         projects={projects}
+        labels={labels}
         isOpen={taskModalOpen}
         onClose={() => {
           setTaskModalOpen(false);

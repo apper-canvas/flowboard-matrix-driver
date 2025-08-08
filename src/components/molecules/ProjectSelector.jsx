@@ -3,12 +3,12 @@ import Select from "@/components/atoms/Select";
 import ApperIcon from "@/components/ApperIcon";
 
 const ProjectSelector = ({ projects, selectedProject, onProjectChange }) => {
-  return (
+return (
     <div className="flex items-center space-x-3">
       <div className="flex items-center space-x-2">
         <div
           className="w-4 h-4 rounded-full"
-          style={{ backgroundColor: selectedProject?.color }}
+          style={{ backgroundColor: selectedProject?.color_c }}
         />
         <ApperIcon name="Folder" size={20} className="text-gray-600" />
       </div>
@@ -25,7 +25,7 @@ const ProjectSelector = ({ projects, selectedProject, onProjectChange }) => {
         <option value="">All Projects</option>
         {projects.map((project) => (
           <option key={project.Id} value={project.Id}>
-            {project.name}
+            {project.Name}
           </option>
         ))}
       </Select>

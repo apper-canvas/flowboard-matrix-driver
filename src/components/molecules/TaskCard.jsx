@@ -17,7 +17,7 @@ const TaskCard = ({
   onDragEnd,
   isDragging = false
 }) => {
-  const isOverdue = task.dueDate && new Date(task.dueDate) < new Date() && task.status !== "done";
+const isOverdue = task.due_date_c && new Date(task.due_date_c) < new Date() && task.status_c !== "done";
   
   const handleDragStart = (e) => {
     if (onDragStart) {
@@ -46,9 +46,9 @@ const TaskCard = ({
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center space-x-2">
           {project && (
-            <div
+<div
               className="w-3 h-3 rounded-full"
-              style={{ backgroundColor: project.color }}
+              style={{ backgroundColor: project.color_c }}
             />
           )}
           <PriorityIndicator priority={task.priority} />
@@ -76,46 +76,46 @@ const TaskCard = ({
         </div>
       </div>
       
-      <h4 className="font-medium text-gray-900 mb-2 line-clamp-2">
-        {task.title}
+<h4 className="font-medium text-gray-900 mb-2 line-clamp-2">
+        {task.title_c}
       </h4>
       
-      {task.description && (
+{task.description_c && (
         <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-          {task.description}
+          {task.description_c}
         </p>
       )}
 {/* Task Labels */}
-      {task.labelIds && task.labelIds.length > 0 && (
+{task.label_ids_c && task.label_ids_c.length > 0 && (
         <div className="flex flex-wrap gap-1 mb-2">
-          {task.labelIds.map((labelId) => {
-            const label = labels.find(l => l.Id === labelId);
+          {task.label_ids_c.split(',').map((labelId) => {
+            const label = labels.find(l => l.Id === parseInt(labelId));
             return label ? (
               <span
                 key={labelId}
                 className="inline-block px-2 py-1 text-xs font-medium rounded-full text-white"
-                style={{ backgroundColor: label.color }}
+                style={{ backgroundColor: label.color_c }}
               >
-                {label.name}
+                {label.Name}
               </span>
             ) : null;
           })}
         </div>
       )}
 
-      <div className="flex items-center justify-between">
-        {task.dueDate && (
+<div className="flex items-center justify-between">
+        {task.due_date_c && (
           <div className={cn(
             "flex items-center space-x-1 text-xs",
             isOverdue ? "text-error" : "text-gray-500"
           )}>
             <ApperIcon name="Calendar" size={12} />
-            <span>{format(new Date(task.dueDate), "MMM dd")}</span>
+            <span>{format(new Date(task.due_date_c), "MMM dd")}</span>
           </div>
         )}
         
-        <Badge variant={task.priority} className="text-xs">
-          {task.priority}
+        <Badge variant={task.priority_c} className="text-xs">
+          {task.priority_c}
         </Badge>
       </div>
     </Card>

@@ -28,13 +28,13 @@ const [formData, setFormData] = useState({
 useEffect(() => {
     if (task) {
       setFormData({
-        title: task.title || "",
-        description: task.description || "",
-        projectId: task.projectId?.toString() || "",
-        priority: task.priority || "medium",
-        dueDate: task.dueDate ? task.dueDate.split('T')[0] : "",
-        status: task.status || "todo",
-        labelIds: task.labelIds || []
+        title: task.title_c || "",
+        description: task.description_c || "",
+        projectId: task.project_id_c?.Id?.toString() || "",
+        priority: task.priority_c || "medium",
+        dueDate: task.due_date_c ? task.due_date_c.split('T')[0] : "",
+        status: task.status_c || "todo",
+        labelIds: task.label_ids_c ? task.label_ids_c.split(',').map(id => parseInt(id)) : []
       });
     } else {
       setFormData({
@@ -54,11 +54,14 @@ const handleSubmit = (e) => {
     if (!formData.title.trim()) return;
 
     const taskData = {
-      ...formData,
-      projectId: parseInt(formData.projectId),
-      dueDate: formData.dueDate ? new Date(formData.dueDate).toISOString() : null,
-      labelIds: formData.labelIds,
-      updatedAt: new Date().toISOString()
+      title_c: formData.title,
+      description_c: formData.description,
+      project_id_c: parseInt(formData.projectId),
+      priority_c: formData.priority,
+      due_date_c: formData.dueDate ? new Date(formData.dueDate).toISOString() : null,
+      status_c: formData.status,
+      label_ids_c: formData.labelIds.join(','),
+      updated_at_c: new Date().toISOString()
     };
 
     if (task) {
@@ -66,9 +69,9 @@ const handleSubmit = (e) => {
     } else {
       onSave({
         ...taskData,
-        createdAt: new Date().toISOString(),
-        completedAt: null,
-        position: 0
+        created_at_c: new Date().toISOString(),
+        completed_at_c: null,
+        position_c: 0
       });
     }
     
@@ -186,9 +189,9 @@ const handleSubmit = (e) => {
                     onChange={(e) => handleChange("projectId", e.target.value)}
                     required
                   >
-                    {projects.map((project) => (
+{projects.map((project) => (
                       <option key={project.Id} value={project.Id}>
-                        {project.name}
+                        {project.Name}
                       </option>
                     ))}
                   </Select>

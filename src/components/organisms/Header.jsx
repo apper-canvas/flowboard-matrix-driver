@@ -9,7 +9,8 @@ const Header = ({
   onProjectChange, 
   onAddTask,
   onAddProject,
-  onManageLabels
+  onManageLabels,
+  onLogout
 }) => {
   return (
     <header className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-40">
@@ -52,6 +53,15 @@ const Header = ({
             <Button onClick={onAddTask}>
               <ApperIcon name="Plus" size={16} className="mr-2" />
               Add Task
+            </Button>
+            
+            <Button
+              variant="secondary"
+              onClick={onLogout}
+              className="ml-2"
+            >
+              <ApperIcon name="LogOut" size={16} className="mr-2" />
+              Logout
             </Button>
           </div>
         </div>

@@ -22,12 +22,12 @@ const KanbanBoard = ({
     { id: "done", title: "Done", icon: "CheckCircle2" }
   ];
 
-  const getTasksByStatus = (status) => {
-    return tasks.filter(task => task.status === status);
+const getTasksByStatus = (status) => {
+    return tasks.filter(task => task.status_c === status);
   };
 
-  const getProjectForTask = (task) => {
-    return projects.find(project => project.Id === task.projectId);
+const getProjectForTask = (task) => {
+    return projects.find(project => project.Id === task.project_id_c?.Id);
   };
 
   const handleDragStart = (e, task) => {
@@ -58,10 +58,10 @@ const KanbanBoard = ({
   const handleDrop = (e, columnId) => {
     e.preventDefault();
     if (draggedTask && draggedTask.status !== columnId) {
-      const updatedTask = {
+const updatedTask = {
         ...draggedTask,
-        status: columnId,
-        completedAt: columnId === "done" ? new Date().toISOString() : null
+        status_c: columnId,
+        completed_at_c: columnId === "done" ? new Date().toISOString() : null
       };
       onTaskUpdate(updatedTask);
     }

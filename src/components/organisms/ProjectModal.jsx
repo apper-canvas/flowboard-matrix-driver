@@ -10,7 +10,7 @@ const ProjectModal = ({
   onClose, 
   onSave 
 }) => {
-  const [formData, setFormData] = useState({
+const [formData, setFormData] = useState({
     name: "",
     color: "#5B47E0"
   });
@@ -22,10 +22,10 @@ const ProjectModal = ({
   ];
 
   useEffect(() => {
-    if (project) {
+if (project) {
       setFormData({
-        name: project.name || "",
-        color: project.color || "#5B47E0"
+        name: project.Name || "",
+        color: project.color_c || "#5B47E0"
       });
     } else {
       setFormData({
@@ -35,13 +35,14 @@ const ProjectModal = ({
     }
   }, [project, isOpen]);
 
-  const handleSubmit = (e) => {
+const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.name.trim()) return;
 
     const projectData = {
-      ...formData,
-      updatedAt: new Date().toISOString()
+      Name: formData.name,
+      color_c: formData.color,
+      updated_at_c: new Date().toISOString()
     };
 
     if (project) {
@@ -49,9 +50,9 @@ const ProjectModal = ({
     } else {
       onSave({
         ...projectData,
-        createdAt: new Date().toISOString(),
-        taskCount: 0,
-        completedCount: 0
+        created_at_c: new Date().toISOString(),
+        task_count_c: 0,
+        completed_count_c: 0
       });
     }
     
