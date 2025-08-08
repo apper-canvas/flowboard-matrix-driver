@@ -1,0 +1,34 @@
+[
+  {
+    "Id": 1,
+    "name": "Website Redesign",
+    "color": "#5B47E0",
+    "createdAt": "2024-01-15T08:00:00.000Z",
+    "taskCount": 8,
+    "completedCount": 3
+  },
+  {
+    "Id": 2,
+    "name": "Mobile App",
+    "color": "#FF6B6B",
+    "createdAt": "2024-01-20T10:30:00.000Z",
+    "taskCount": 12,
+    "completedCount": 7
+  },
+  {
+    "Id": 3,
+    "name": "Marketing Campaign",
+    "color": "#4ECDC4",
+    "createdAt": "2024-02-01T14:15:00.000Z",
+    "taskCount": 6,
+    "completedCount": 2
+  },
+  {
+    "Id": 4,
+    "name": "Product Launch",
+    "color": "#45B7D1",
+    "createdAt": "2024-02-10T09:45:00.000Z",
+    "taskCount": 15,
+    "completedCount": 5
+  }
+]
